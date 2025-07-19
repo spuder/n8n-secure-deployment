@@ -25,24 +25,28 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-      - ./tailscale/tmp/tailscaled.sock:/var/run/tailscale/tailscaled.sock
+      # - ./tailscale/tmp/tailscaled.sock:/var/run/tailscale/tailscaled.sock
     networks:
       - caddy
+    depends_on:
+      - n8n
     # env_file:
     #   - .env
 
-  tailscale:
-    image: tailscale/tailscale
-    container_name: tailscale
-    restart: unless-stopped
-    network_mode: "host"  # Required for Tailscale to function
-    volumes:
-      - /dev/net/tun:/dev/net/tun
-      - ./tailscale/varlib:/var/lib
-      - ./tailscale/tmp:/tmp
-    environment:
-      - TS_AUTHKEY=${TAILSCALE_AUTH_KEY}  # Automatically authenticate Tailscale
-      - TS_STATE_DIR=/var/lib/tailscale
+  # tailscale:
+  #   image: tailscale/tailscale
+  #   container_name: tailscale
+  #   restart: unless-stopped
+  #   network_mode: "host"  # Required for Tailscale to function
+  #   cap_add:
+  #     - NET_ADMIN  # Add this for TUN device access
+  #   volumes:
+  #     - /dev/net/tun:/dev/net/tun
+  #     - ./tailscale/varlib:/var/lib
+  #     - ./tailscale/tmp:/tmp
+  #   environment:
+  #     - TS_AUTHKEY=${TAILSCALE_AUTH_KEY}  # Automatically authenticate Tailscale
+  #     - TS_STATE_DIR=/var/lib/tailscale
 
 volumes:
   n8n_data:
